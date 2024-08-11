@@ -60,6 +60,44 @@ function RegisterPage() {
                     </h2>
 
                     <form>
+
+                        <div className="grid md:grid-cols-2 md:gap-6">
+                            <div className="relative z-0 w-full mb-4 group">
+                                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                                    First Name
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter your First Name"
+                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                        onChange={handleChange}
+                                    />
+
+                                    <span className="absolute right-4 top-4">
+                                        {/* <EmailIcon /> */}
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="relative z-0 w-full mb-5 group">
+                                <label className="mb-2.5 block font-medium text-black dark:text-white">
+                                    Last Name
+                                </label>
+                                <div className="relative">
+                                    <input
+                                        type="text"
+                                        placeholder="Enter your Last Name"
+                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                        onChange={handleChange}
+                                    />
+
+                                    <span className="absolute right-4 top-4">
+                                        {/* <EmailIcon /> */}
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className="mb-4">
                             <label className="mb-2.5 block font-medium text-black dark:text-white">
                                 Username

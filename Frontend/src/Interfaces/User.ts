@@ -8,5 +8,4 @@ export interface User {
     token?: string;
     isEditor?: boolean,
     isAdmin?: boolean;
-    // cartProducts?: Array<ProductQuantity>;
 }

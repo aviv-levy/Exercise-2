@@ -122,6 +122,12 @@ function LoginPage() {
                             </div>
                         </div>
 
+                        <div className="mb-6">
+
+                            <p>Don't have a user? <Link to='/register' className='text-blue-500 underline'>Register now</Link></p>
+
+                        </div>
+
                         <div className="mb-5">
                             <button type="submit"  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">Sign In</button>
                         </div>
