@@ -1,66 +1,48 @@
 import { FormEvent, useContext, useState } from 'react';
-// import { isEmailValid, isPasswordValid } from '../Services/Validations';
 import { login } from '../Services/ApiService';
 import { setToken } from '../Auth/TokenManager';
-// import { UserContext } from '../App';
 import { Link, useNavigate } from 'react-router-dom';
-// import LockIcon from '../assets/svgs/LockIcon';
-// import PhoneSvg from '../assets/svgs/PhoneSVG';
-// import EmailIcon from '../assets/svgs/EmailIcon';
 import ConnectionLayout from '../Layouts/ConnectionLayout';
 import SVGLayout from '../Layouts/SvgLayout';
 import FormLayout from '../Layouts/FormLayout';
+import { LoginUser } from '../Interfaces/LoginUser';
+import { useHandleChange } from '../Hooks/useHandleChange';
+import { isLoginValid } from '../Services/Validations';
+import { UserDetailsContext } from '../App';
 
 function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
+    const [user, setUser] = useState<LoginUser>({} as LoginUser);
+    const [error, setError] = useState<string>('');
+
+    const handleChange = useHandleChange(setUser);
 
     const navigate = useNavigate();
 
-    // const userContext = useContext(UserContext);
+    const userContext = useContext(UserDetailsContext);
 
-    function validate(): boolean {
-        // if (isEmailValid(email)) {
-        //     setError('מייל לא תקין!');
-        //     return false;
-        // }
-        // if (isPasswordValid(password)) {
-        //     setError('סיסמא חייבת להכיל לפחות 8 תווים, ולפחות אות אחת!');
-        //     return false;
-        // }
+    async function handleLogin(e: FormEvent) {
+        e.preventDefault();
+        if (!isLoginValid(user)) {
+            return;
+        }
+        await login(user).then((user) => {
+            setToken(user.token)
+            userContext?.setUser(user);
 
-        // setError('');
-        return true;
+            navigate('/shop');
+
+        }).catch((err) => {
+
+            if (err === 401) {
+                setError('Username or Password wrong!');
+                return;
+            }
+            else {
+                setError('Something went wrong');
+                return;
+            }
+        })
     }
-
-    // async function handleLogin(e: FormEvent) {
-    //     e.preventDefault();
-    //     if (!validate()) {
-    //         return;
-    //     }
-    //     await login({ email, password }).then((user) => {
-    //         // setToken(user.token)
-    //         // userContext?.setAdmin(user.isAdmin)
-    //         // userContext?.setUserFirstName(user.firstName)
-    //         // userContext?.setUserLastName(user.lastName)
-
-    //         // userContext?.setShowIsLoggedIn(true);
-    //         navigate('/dashboard');
-
-    //     }).catch((err) => {
-
-    //         if (err === 401) {
-    //             setError('מייל או סיסמא אינם נכונים!');
-    //             return;
-    //         }
-    //         else {
-    //             setError('משהו לא תקין יש לפנות לתמיכה');
-    //             return;
-    //         }
-    //     })
-    // }
-
 
     return (
 
@@ -74,10 +56,6 @@ function LoginPage() {
                     <p className="2xl:px-20">
                         Your Way To Buy Great Food.
                     </p>
-
-                    <span className="mt-15 inline-block">
-                        {/* <PhoneSvg /> */}
-                    </span>
                 </SVGLayout>
 
                 <FormLayout>
@@ -93,14 +71,11 @@ function LoginPage() {
                             <div className="relative">
                                 <input
                                     type="text"
+                                    name="username"
                                     placeholder="Enter your username"
                                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={(e) => setEmail(e.target.value)}
+                                    onChange={handleChange}
                                 />
-
-                                <span className="absolute right-4 top-4">
-                                    {/* <EmailIcon /> */}
-                                </span>
                             </div>
                         </div>
 
@@ -111,14 +86,11 @@ function LoginPage() {
                             <div className="relative">
                                 <input
                                     type="password"
-                                    placeholder="6+ Characters, 1 Capital letter"
+                                    name="password"
+                                    placeholder="8+ Characters, 1 Capital and small letter, 1 special sign"
                                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={(e) => setPassword(e.target.value)}
+                                    onChange={handleChange}
                                 />
-
-                                <span className="absolute right-4 top-4">
-                                    {/* <LockIcon /> */}
-                                </span>
                             </div>
                         </div>
 
@@ -129,7 +101,10 @@ function LoginPage() {
                         </div>
 
                         <div className="mb-5">
-                            <button type="submit"  className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90">Sign In</button>
+                            <button type="button"
+                                className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                                onClick={handleLogin}>
+                                Sign In</button>
                         </div>
 
                         <div className='text-red-600 text-center'>{error}</div>

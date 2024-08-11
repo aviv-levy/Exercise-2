@@ -19,6 +19,26 @@ async function getCart() {
 
 // const myCart = await getCart();
 
+// Get all data of user by username.
+async function getUserByUsername(username) {
+    const [rows] = await pool.query(`
+        SELECT * 
+        FROM users
+        WHERE username = ?
+        `, [username])
+    return rows[0];
+}
+
+// Get all data of user by id.
+async function getUserById(id) {
+    const [rows] = await pool.query(`
+        SELECT * 
+        FROM users
+        WHERE id = ?
+        `, [id])
+    return rows[0];
+}
+
 
 async function getItem(id) {
     const [rows] = await pool.query(`
@@ -31,11 +51,13 @@ async function getItem(id) {
 
 // const myItem = await getItem(4);
 
-async function createItem(name, type) {
+// Create New user in user table.
+// Return the ID of inserted row.
+async function createUser(firstname, lastname, username, password) {
     const [result] = await pool.query(`
-        INSERT INTO cart (name,type)
-        VALUES (?,?)
-        `, [name, type])
+        INSERT INTO users (firstname, lastname, username, password,isEditor,isAdmin)
+        VALUES (?,?,?,?,false,false)
+        `, [firstname, lastname, username, password])
 
     return result.insertId;
 }
@@ -43,4 +65,9 @@ async function createItem(name, type) {
 //const result = await createItem('Tomato','vevgetable');
 
 
-module.exports = pool;
+module.exports = {
+    pool,
+    createUser,
+    getUserByUsername,
+    getUserById,
+};

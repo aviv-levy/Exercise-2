@@ -3,14 +3,15 @@ import ConnectionLayout from "../Layouts/ConnectionLayout";
 import SVGLayout from "../Layouts/SvgLayout";
 import FormLayout from "../Layouts/FormLayout";
 import { FormEvent, useState } from "react";
-import { User } from "../Interfaces/User";
 import { useHandleChange } from "../Hooks/useHandleChange.ts";
 import { addNewUser } from "../Services/ApiService.ts";
+import { isRegistrationValid } from "../Services/Validations.ts";
+import { RegisterationUser } from "../Interfaces/RegisterationUser.ts";
 
 function RegisterPage() {
 
-    const [user, setUser] = useState({} as User);
-    const [error, setError] = useState('');
+    const [user, setUser] = useState<RegisterationUser>({} as RegisterationUser);
+    const [error, setError] = useState<string>('');
 
     const handleChange = useHandleChange(setUser);
 
@@ -19,8 +20,8 @@ function RegisterPage() {
     //Handle Register button
     async function handleRegister(e: FormEvent) {
         e.preventDefault();
-        // if (!isRegisterUserValid(user, setError))
-        return;
+        if (!isRegistrationValid(user))
+            return;
 
         //api request
         await addNewUser(user).then(() => {
@@ -48,10 +49,6 @@ function RegisterPage() {
                     <p className="2xl:px-20">
                         Your Way To Buy Great Food.
                     </p>
-
-                    <span className="mt-15 inline-block">
-                        {/* <PhoneSvg /> */}
-                    </span>
                 </SVGLayout>
 
                 <FormLayout>
@@ -69,14 +66,11 @@ function RegisterPage() {
                                 <div className="relative">
                                     <input
                                         type="text"
+                                        name="firstname"
                                         placeholder="Enter your First Name"
                                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         onChange={handleChange}
                                     />
-
-                                    <span className="absolute right-4 top-4">
-                                        {/* <EmailIcon /> */}
-                                    </span>
                                 </div>
                             </div>
                             <div className="relative z-0 w-full mb-5 group">
@@ -86,14 +80,11 @@ function RegisterPage() {
                                 <div className="relative">
                                     <input
                                         type="text"
+                                        name="lastname"
                                         placeholder="Enter your Last Name"
                                         className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                         onChange={handleChange}
                                     />
-
-                                    <span className="absolute right-4 top-4">
-                                        {/* <EmailIcon /> */}
-                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -105,14 +96,11 @@ function RegisterPage() {
                             <div className="relative">
                                 <input
                                     type="text"
+                                    name="username"
                                     placeholder="Enter your username"
                                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                     onChange={handleChange}
                                 />
-
-                                <span className="absolute right-4 top-4">
-                                    {/* <EmailIcon /> */}
-                                </span>
                             </div>
                         </div>
 
@@ -123,14 +111,26 @@ function RegisterPage() {
                             <div className="relative">
                                 <input
                                     type="password"
-                                    placeholder="6+ Characters, 1 Capital letter"
+                                    name="password"
+                                    placeholder="8+ Characters, 1 Capital and small letter, 1 special sign"
                                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
                                     onChange={handleChange}
                                 />
+                            </div>
+                        </div>
 
-                                <span className="absolute right-4 top-4">
-                                    {/* <LockIcon /> */}
-                                </span>
+                        <div className="mb-6">
+                            <label className="mb-2.5 block font-medium text-black dark:text-white">
+                                Repeat Password
+                            </label>
+                            <div className="relative">
+                                <input
+                                    type="password"
+                                    name="rePassword"
+                                    placeholder="Repeat Password"
+                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
+                                    onChange={handleChange}
+                                />
                             </div>
                         </div>
 
