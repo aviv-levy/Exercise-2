@@ -23,9 +23,9 @@ function RegisterPage() {
         if (!isRegistrationValid(user))
             return;
 
-        //api request
+        //api request to create new user
         await addNewUser(user).then(() => {
-            //created React Alert
+            
             navigate('/login');
 
         }).catch((err) => {

@@ -37,12 +37,6 @@ function HomePage() {
             : // else show  products buttons
             <>
               <Link
-                to="/products"
-                className="block w-full px-4 py-2 text-center text-black bg-white border-2 border-black rounded-lg shadow transition duration-300 ease-in-out transform hover:bg-black hover:text-white focus:outline-none"
-              >
-                My Products
-              </Link>
-              <Link
                 to="/newProduct"
                 className="block w-full px-4 py-2 text-center text-black bg-white border-2 border-black rounded-lg shadow transition duration-300 ease-in-out transform hover:bg-black hover:text-white focus:outline-none"
               >

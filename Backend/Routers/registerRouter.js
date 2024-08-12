@@ -7,6 +7,7 @@ const { validatePost } = require('../Validations/UserRegisterValidation.js');
 
 
 // http://localhost:4600/register
+// Create new user in users table.
 router.post('/', async (req, res) => {
 
     try {

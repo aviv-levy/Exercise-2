@@ -94,3 +94,39 @@ export async function addNewProduct(product: Product): Promise<Product> {
         throw httpStatusCode;
     }
 }
+
+
+// Update product details
+export async function updateProduct(product: Product): Promise<Product> {
+    try {
+        const result = await axios.put<Product>(serverUrl + `product/updateProduct`, product, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+        })
+
+        return result.data;
+
+    } catch (error: any) {
+        const errorText = error.response.data
+        throw errorText;
+    }
+}
+
+
+// Delete product by Id
+export async function deleteProduct(productId?: number): Promise<void> {
+    try {
+        await axios.delete(serverUrl + `product/deleteProduct/${productId}`, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getToken()}`
+            },
+        })
+
+    } catch (error: any) {
+        const errorText = error.response.data
+        throw errorText;
+    }
+}

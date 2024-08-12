@@ -6,8 +6,8 @@ const pool = require('./DatabaseConnection');
 // Return the ID of inserted row.
 async function createUser(firstname, lastname, username, password) {
     const [result] = await pool.query(`
-        INSERT INTO users (firstname, lastname, username, password,isEditor,isAdmin)
-        VALUES (?,?,?,?,false,false)
+        INSERT INTO users (firstname, lastname, username, password,isEditor)
+        VALUES (?,?,?,?,false)
         `, [firstname, lastname, username, password])
 
     return result.insertId;

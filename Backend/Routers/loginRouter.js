@@ -24,7 +24,7 @@ Router.post('/', async (req, res) => {
             return res.status(401).send('Incorrect please try again');
 
         //      Check the password that sent from user, if it's correct send a token. 
-        //      else send http status 401
+        //      else send Unauthorized http status 401
         if (await bcrypt.compare(password, user.password.toString())) {
             res.json({
                 token: jwt.sign({ id: user.id, firstname: user.firstname, lastname: user.lastname }, process.env.SECRET, { expiresIn: '1h' }),
@@ -32,7 +32,6 @@ Router.post('/', async (req, res) => {
                 firstname: user.firstname,
                 lastname: user.lastname,
                 isEditor: user.isEditor,
-                isAdmin: user.isAdmin
             });
         }
         else

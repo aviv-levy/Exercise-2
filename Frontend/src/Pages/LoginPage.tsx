@@ -20,11 +20,13 @@ function LoginPage() {
 
     const userContext = useContext(UserDetailsContext);
 
+    //Handle Login click button
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
         if (!isLoginValid(user)) {
             return;
         }
+        // api request to login with user cardentials
         await login(user).then((user) => {
             setToken(user.token)
             userContext?.setUser(user);

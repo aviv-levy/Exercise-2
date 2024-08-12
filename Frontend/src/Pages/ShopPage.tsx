@@ -3,23 +3,28 @@ import SearchBar from "../Components/SearchBar";
 import { Product } from "../Interfaces/Product";
 import { getProducts } from "../Services/ApiService";
 import ProductItem from "../Components/ProductItem";
+import UpdateProductPageModal from "./UpdateProductPageModal";
 
 
 
 function ShopPage() {
 
-    const [products, setProducts] = useState<Array<Product>>([]);
-    const [filteredProducts, setFilteredProducts] = useState<Array<Product>>([]);
+    const [products, setProducts] = useState<Array<Product>>([]);// Original array of products from server
+    const [filteredProducts, setFilteredProducts] = useState<Array<Product>>([]); // copy of products array for filtering with search
+    const [editProduct, setEditProduct] = useState<Product>({} as Product);
     const [search, setSearch] = useState<string>('');
+    const [isEdit, setIsEdit] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
 
-    useEffect(() => {
 
+    // Get all products before rendering.
+    useEffect(() => {
         const fetchData = async () => {
             try {
                 const getAllProducts = await getProducts()
                 setProducts(getAllProducts);
                 setFilteredProducts(getAllProducts);
+                
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -45,8 +50,15 @@ function ShopPage() {
         return <div>Loading...</div>;
     }
 
+
     return (
         <>
+            {
+                isEdit && //if edit button clicked show modal of updating product
+                <div className="flex justify-center w-full">
+                    <UpdateProductPageModal product={editProduct} setProduct={setEditProduct} setIsEdit={setIsEdit} />
+                </div>
+            }
             <SearchBar
                 placeholder="Search Products..."
                 changeFunc={setSearch}
@@ -80,18 +92,17 @@ function ShopPage() {
                     </thead>
                     <tbody>
                         {
-                            filteredProducts?.map(product =>
-                                <ProductItem key={product.id} product={product} />
+                            filteredProducts?.map((product) =>
+                                <ProductItem key={product.id} product={product} setIsEdit={setIsEdit} setEditProduct={setEditProduct} />
                             )
                         }
                     </tbody>
                 </table>
             </div>
 
-
-
-
         </>
+
+
     );
 }
 

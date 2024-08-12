@@ -3,7 +3,7 @@ const {getUserById } = require("../Database/Users");
 const router = express.Router();
 
 //http://localhost:4600/user
-// Response all user details
+// Response all user details except sensitive data
 router.get('/', async (req, res) => {
     try {
         const user = await getUserById(req.id);

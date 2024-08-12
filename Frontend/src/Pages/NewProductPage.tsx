@@ -2,55 +2,38 @@ import { FormEvent, useEffect, useState } from "react";
 import { useHandleChange } from "../Hooks/useHandleChange";
 import ConnectionLayout from "../Layouts/ConnectionLayout";
 import FormLayout from "../Layouts/FormLayout";
-import SVGLayout from "../Layouts/SvgLayout";
-import { Product, ProductType } from "../Interfaces/Product";
+import { Product } from "../Interfaces/Product";
 import { addNewProduct } from "../Services/ApiService";
+import { toast } from "react-toastify";
+import CancelButton from "../Components/CancelButton";
+import { useNavigate } from "react-router-dom";
 
 function NewProductPage() {
 
     const [product, setProduct] = useState<Product>({} as Product);
     const [error, setError] = useState<string>('');
+    const [dateControl, setDateControl] = useState<string>('')
 
     const handleChange = useHandleChange(setProduct);
+    const navigate = useNavigate();
+
 
     //Handle Add new button
     async function handleAddNew(e: FormEvent) {
         e.preventDefault();
-        formateDate();
-        console.log(product.date);
 
-
+        //Api call to create new Product, when added successfuly show notification of success 
         await addNewProduct(product).then(() => {
 
-
+            toast.success('Product added');
 
         }).catch((err) => {
-
-            if (err === 401) {
-                setError('Username or Password wrong!');
-                return;
-            }
-            else {
-                // setError('Something went wrong');
-                setError(err);
-                return;
-            }
+            setError('Something went wrong:' + err);
+            return;
         })
 
 
     }
-
-    function formateDate() {
-        const day = String(product.date.getDate()).padStart(2, '0');
-        const month = String(product.date.getMonth() + 1).padStart(2, '0'); // Months are zero-based, so add 1
-        const year = product.date.getFullYear();
-
-        setProduct((prevState) => ({
-            ...prevState,
-            date: new Date(`${day}-${month}-${year}`),// "DD-MM-YYYY"
-        }));
-    }
-
 
     // Calculate the date 7 days ago
     useEffect(() => {
@@ -58,7 +41,7 @@ function NewProductPage() {
         date.setDate(date.getDate() - 7);
 
         // Format the date as YYYY-MM-DD
-        const formattedDate: string = date.toISOString().split('T')[0];
+        setDateControl(date.toISOString().split('T')[0]);
 
         // Set the default date value in the form state
         setProduct((prevState) => ({
@@ -68,7 +51,7 @@ function NewProductPage() {
     }, []);
 
 
-    if (product.date == undefined)
+    if (product.date === undefined)
         return <div>loading...</div>
 
 
@@ -107,9 +90,9 @@ function NewProductPage() {
                                     onChange={handleChange}>
 
                                     <option value={0}>Select Type</option>
-                                    <option value={ProductType.Fruit}>Fruit</option>
-                                    <option value={ProductType.Vegetable}>Vegetable</option>
-                                    <option value={ProductType.Field}>Field</option>
+                                    <option value='Fruit'>Fruit</option>
+                                    <option value='Vegetable'>Vegetable</option>
+                                    <option value='Field'>Field</option>
                                 </select>
                             </div>
                         </div>
@@ -137,10 +120,13 @@ function NewProductPage() {
                                 <input
                                     type="date"
                                     name="date"
-                                    value={product.date.toISOString().split('T')[0]}
+                                    value={dateControl}
                                     placeholder="8+ Characters, 1 Capital and small letter, 1 special sign"
                                     className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={handleChange}
+                                    onChange={(e) => {
+                                        setDateControl(e.target.value);
+                                        handleChange(e);
+                                    }}
                                 />
                             </div>
                         </div>
@@ -161,20 +147,17 @@ function NewProductPage() {
 
                         <div className="mb-5">
                             <button type="button"
-                                className="w-full cursor-pointer rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
+                                className="w-auto cursor-pointer me-3 rounded-lg border border-primary bg-primary p-4 text-white transition hover:bg-opacity-90"
                                 onClick={handleAddNew}>
                                 Add Product
                             </button>
+                            <CancelButton handleClick={() => navigate('/')} />
                         </div>
 
                         <div className='text-red-600 text-center'>{error}</div>
                     </form>
                 </div>
             </FormLayout >
-
-            <SVGLayout>
-                addd picture
-            </SVGLayout>
         </ConnectionLayout >
     );
 }

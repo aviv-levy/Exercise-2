@@ -1,35 +1,73 @@
+import { useContext, useState } from "react";
 import { Product } from "../Interfaces/Product";
+import { dateFormatCorrection } from "../Services/DateCorrection";
+import { UserDetailsContext } from "../App";
+import { deleteProduct } from "../Services/ApiService";
+import { toast } from "react-toastify";
 
 interface Props {
-    product: Product
+    product: Product,
+    setIsEdit: Function,
+    setEditProduct: Function
 }
 
 
-function ProductItem({ product }: Props) {
+
+function ProductItem({ product, setIsEdit, setEditProduct }: Props) {
+    const [isRemoved, setIsRemoved] = useState<boolean>(false);
+    const userContext = useContext(UserDetailsContext);
+
+    //Handle edit button
+    //When clicked set product of needed to be update.
+    //And set true isEdit to show modal of update form.
+    function handleEdit() {
+        setEditProduct(product);
+        setIsEdit(true);
+    }
+
+    //Handle remove button
+    async function handleRemove() {
+        //api request to delete product
+        await deleteProduct(product.id)
+            .then(() => {
+                setIsRemoved(true)
+                toast.success('Product removed')
+            }).catch((err) => { if (err) return; })
+    }
+
     return (
+        <>
+            {
+                !isRemoved &&
+                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                        {product.id}
+                    </th>
+                    <td className="px-6 py-4">
+                        {product.name}
+                    </td>
+                    <td className="px-6 py-4">
+                        {product.barcode}
+                    </td>
+                    <td className="px-6 py-4">
+                        {product.type}
+                    </td>
+                    <td className="px-6 py-4">
+                        {dateFormatCorrection(product.date)}
+                    </td>
 
-        <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-            <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
-                {product.id}
-            </th>
-            <td className="px-6 py-4">
-                {product.name}
-            </td>
-            <td className="px-6 py-4">
-                {product.barcode}
-            </td>
-            <td className="px-6 py-4">
-                {product.type}
-            </td>
-            <td className="px-6 py-4">
-                {"04-05-1998"}
-            </td>
-            <td className="flex items-center px-6 py-4">
-                <button className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</button>
-                <button className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</button>
-            </td>
-        </tr>
+                    <td className="flex items-center px-6 py-4">
+                        {userContext?.user.isEditor && // if user is editor show editor buttons
+                            <>
+                                <button onClick={handleEdit} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</button>
+                                <button onClick={handleRemove} className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</button>
+                            </>
+                        }
+                    </td>
+                </tr>
+            }
 
+        </>
     );
 }
 

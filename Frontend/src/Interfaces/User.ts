@@ -1,8 +1,7 @@
 export interface User {
-    id: string;
+    id: number;
     firstname: string;
     lastname: string;
     token?: string;
     isEditor: boolean,
-    isAdmin: boolean;
 }

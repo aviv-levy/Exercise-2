@@ -8,30 +8,4 @@ const pool = mysql.createPool({
     database: process.env.DATABASE
 }).promise()
 
-
-
-//Get all items in cart
-async function getCart() {
-    const [rows] = await pool.query("SELECT * FROM items")
-    return rows;
-}
-
-// const myCart = await getCart();
-
-
-async function getItem(id) {
-    const [rows] = await pool.query(`
-        SELECT * 
-        FROM cart
-        WHERE id = ?
-        `, [id])
-    return rows[0];
-}
-
-// const myItem = await getItem(4);
-
-
-//const result = await createItem('Tomato','vevgetable');
-
-
 module.exports = pool

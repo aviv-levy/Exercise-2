@@ -20,19 +20,37 @@ async function getProductById(id) {
 
 // Create New product in products table.
 // Return the ID of inserted row.
-async function createProduct(name, barcode, description, type, date) {
+async function createProduct(name, barcode, description, type, date, createdById) {
     const [result] = await pool.query(`
-        INSERT INTO products (name, barcode, description, type, date)
-        VALUES (?,?,?,?,?)
-        `, [name, barcode, description, type, date])
+        INSERT INTO products (name, barcode, description, type, date, createdById)
+        VALUES (?,?,?,?,?,?)
+        `, [name, barcode, description, type, date, createdById])
 
     return result.insertId;
 }
 
 
+async function updateProduct(name, barcode, description, type, date, id) {
+    const [result] = await pool.query(
+        'UPDATE products SET name = ?, barcode = ?, description = ?, type = ?, date = ? WHERE id = ?',
+        [name, barcode, description, type, date, id]
+    );
+
+    return result;
+}
+
+
+// Delete Product by Id.
+async function deleteProductById(id) {
+    const [result] = await pool.query('DELETE FROM products WHERE id = ?', [id]);
+
+    return result;
+}
 
 module.exports = {
     getProducts,
     getProductById,
-    createProduct
+    createProduct,
+    updateProduct,
+    deleteProductById
 };
