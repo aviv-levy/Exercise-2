@@ -3,7 +3,7 @@ const Router = express.Router();
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
 const { validatePost } = require('../Validations/UserLoginValidation.js');
-const { getUserByUsername } = require("../database.js");
+const { getUserByUsername } = require("../Database/Users.js");
 
 // http://localhost:4600/login
 Router.post('/', async (req, res) => {

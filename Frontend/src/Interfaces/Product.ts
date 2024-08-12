@@ -1,4 +1,4 @@
-enum ProductType {
+export enum ProductType {
     Fruit = 1,
     Vegetable = 2,
     Field = 3 //field crops

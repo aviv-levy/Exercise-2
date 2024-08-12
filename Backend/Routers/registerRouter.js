@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bcrypt = require('bcrypt');
-const mysql = require('../database.js');
+const {createUser} = require('../Database/Users.js');
 const { validatePost } = require('../Validations/UserRegisterValidation.js');
 
 
@@ -23,7 +23,7 @@ router.post('/', async (req, res) => {
         const { firstname, lastname, username, password } = req.body
 
         // Create a new user
-        await mysql.createUser(firstname, lastname, username, password);
+        await createUser(firstname, lastname, username, password);
 
         res.status(201).send('User has been created')
 

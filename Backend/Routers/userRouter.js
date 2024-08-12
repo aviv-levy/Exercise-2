@@ -1,9 +1,9 @@
 const express = require("express");
-const {getUserById } = require("../database");
+const {getUserById } = require("../Database/Users");
 const router = express.Router();
 
 //http://localhost:4600/user
-// Return all user details
+// Response all user details
 router.get('/', async (req, res) => {
     try {
         const user = await getUserById(req.id);

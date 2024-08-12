@@ -1,5 +1,5 @@
 require('dotenv').config();// .env config use
-require('./database').pool // MySql connection
+require('./Database/DatabaseConnection.js') // MySql connection
 
 const express = require('express');
 
@@ -33,11 +33,13 @@ const verifyToken = require('./verifyToken');
 const registerRouter = require('./Routers/registerRouter.js');
 const loginRouter = require('./Routers/loginRouter.js');
 const userRouter = require('./Routers/userRouter.js');
+const productRouter = require('./Routers/productRouter.js');
 
 
 
 app.use('/register', registerRouter);
 app.use('/login', loginRouter);
 app.use('/user',verifyToken, userRouter);
+app.use('/product', productRouter);
 
 

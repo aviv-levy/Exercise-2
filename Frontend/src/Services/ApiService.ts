@@ -3,6 +3,7 @@ import { User } from "../Interfaces/User";
 import { LoginUser } from "../Interfaces/LoginUser";
 import { RegisterationUser } from "../Interfaces/RegisterationUser";
 import { getToken } from "../Auth/TokenManager";
+import { Product } from "../Interfaces/Product";
 
 
 const serverUrl = 'http://localhost:4600/';
@@ -56,5 +57,40 @@ export async function addNewUser(user: RegisterationUser): Promise<Registeration
     } catch (error: any) {
         const errorText = error.response.data
         throw errorText;
+    }
+}
+
+// Get all products
+export async function getProducts(): Promise<Array<Product>> {
+    try {
+        const result = await axios.get<Array<Product>>(serverUrl + `product/getAllProducts`, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+
+        return result.data;
+
+    } catch (error: any) {
+        const errorText = error.response.data
+        throw errorText;
+    }
+}
+
+
+// Add new product
+export async function addNewProduct(product: Product): Promise<Product> {
+    try {
+        const result = await axios.post<Product>(serverUrl + 'product/addProduct', product, {
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + getToken()
+            },
+        })
+        return result.data;
+
+    } catch (error: any) {
+        const httpStatusCode = error.response.data
+        throw httpStatusCode;
     }
 }
