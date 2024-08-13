@@ -4,7 +4,7 @@ export interface Product {
     name: string;
     barcode: number;
     description?: string;
-    type: 'Fruit'|'Vegetable'|'Field';
+    type: 'Fruit' | 'Vegetable' | 'Field' | '0';
     date: Date;
     createdBy: string;
 }

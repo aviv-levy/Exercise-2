@@ -6,15 +6,14 @@ import ConnectionLayout from '../Layouts/ConnectionLayout';
 import SVGLayout from '../Layouts/SvgLayout';
 import FormLayout from '../Layouts/FormLayout';
 import { LoginUser } from '../Interfaces/LoginUser';
-import { useHandleChange } from '../Hooks/useHandleChange';
-import { isLoginValid } from '../Services/Validations';
+import { getLoginErrorsValidation } from '../Services/Validations';
 import { UserDetailsContext } from '../App';
+import CustomizedTextInput from '../Components/CustomizedTextInput';
 
 function LoginPage() {
     const [user, setUser] = useState<LoginUser>({} as LoginUser);
-    const [error, setError] = useState<string>('');
-
-    const handleChange = useHandleChange(setUser);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [generalError, setGeneralError] = useState<string>('');
 
     const navigate = useNavigate();
 
@@ -23,7 +22,12 @@ function LoginPage() {
     //Handle Login click button
     async function handleLogin(e: FormEvent) {
         e.preventDefault();
-        if (!isLoginValid(user)) {
+
+        //Login inputs validation
+        const validationErrors = getLoginErrorsValidation(user);
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
             return;
         }
         // api request to login with user cardentials
@@ -36,11 +40,11 @@ function LoginPage() {
         }).catch((err) => {
 
             if (err === 401) {
-                setError('Username or Password wrong!');
+                setGeneralError('Username or Password wrong!');
                 return;
             }
             else {
-                setError('Something went wrong');
+                setGeneralError('Something went wrong');
                 return;
             }
         })
@@ -66,35 +70,24 @@ function LoginPage() {
                     </h2>
 
                     <form>
-                        <div className="mb-4">
-                            <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                Username
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    name="username"
-                                    placeholder="Enter your username"
-                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
 
-                        <div className="mb-6">
-                            <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                Password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type="password"
-                                    name="password"
-                                    placeholder="8+ Characters, 1 Capital and small letter, 1 special sign"
-                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <CustomizedTextInput
+                            type="text"
+                            label="Username"
+                            name="username"
+                            placeholder="Enter your username"
+                            value={user.username ? user.username : ''}
+                            errorText={errors.username}
+                            setState={setUser} />
+
+                        <CustomizedTextInput
+                            type="password"
+                            label="Password"
+                            name="password"
+                            placeholder="8+ Characters, 1 Capital and small letter, 1 special sign"
+                            value={user.password ? user.password : ''}
+                            errorText={errors.password}
+                            setState={setUser} />
 
                         <div className="mb-6">
 
@@ -109,7 +102,7 @@ function LoginPage() {
                                 Sign In</button>
                         </div>
 
-                        <div className='text-red-600 text-center'>{error}</div>
+                        <div className='text-red-600 text-center'>{generalError}</div>
                     </form>
                 </FormLayout>
             </ConnectionLayout>

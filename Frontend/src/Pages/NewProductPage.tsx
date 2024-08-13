@@ -7,11 +7,14 @@ import { addNewProduct } from "../Services/ApiService";
 import { toast } from "react-toastify";
 import CancelButton from "../Components/CancelButton";
 import { useNavigate } from "react-router-dom";
+import CustomizedTextInput from "../Components/CustomizedTextInput";
+import { getProductErrors } from "../Services/Validations";
 
 function NewProductPage() {
 
     const [product, setProduct] = useState<Product>({} as Product);
-    const [error, setError] = useState<string>('');
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [generalError, setGeneralError] = useState<string>('');
     const [dateControl, setDateControl] = useState<string>('')
 
     const handleChange = useHandleChange(setProduct);
@@ -22,13 +25,21 @@ function NewProductPage() {
     async function handleAddNew(e: FormEvent) {
         e.preventDefault();
 
+        //Product inputs validation
+        const validationErrors = getProductErrors(product);
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+            return;
+        }
+
         //Api call to create new Product, when added successfuly show notification of success 
         await addNewProduct(product).then(() => {
 
             toast.success('Product added');
 
         }).catch((err) => {
-            setError('Something went wrong:' + err);
+            setGeneralError('Something went wrong:' + err);
             return;
         })
 
@@ -66,24 +77,21 @@ function NewProductPage() {
                     <form>
 
                         <div className="grid md:grid-cols-2 md:gap-6">
-                            <div className="relative z-0 w-full mb-4 group">
-                                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                    Product Name
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="name"
-                                        placeholder="Enter Product Name"
-                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
+                            <CustomizedTextInput
+                                type="text"
+                                label="Product Name"
+                                name="name"
+                                placeholder="Enter Product Name"
+                                value={product.name ? product.name : ''}
+                                errorText={errors.name}
+                                setState={setProduct} />
+
+
                             <div className="relative z-0 w-full mb-5 group">
                                 <label className="mb-2.5 block font-medium text-black dark:text-white">
                                     Select Type
                                 </label>
+
                                 <select
                                     name="type"
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
@@ -94,23 +102,18 @@ function NewProductPage() {
                                     <option value='Vegetable'>Vegetable</option>
                                     <option value='Field'>Field</option>
                                 </select>
+                                {errors.type && <div className="text-red-600">{errors.type}</div>}
                             </div>
                         </div>
 
-                        <div className="mb-4">
-                            <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                Barcode
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type="number"
-                                    name="barcode"
-                                    placeholder="Enter Product Barcode"
-                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <CustomizedTextInput
+                            type="number"
+                            label="Barcode"
+                            name="barcode"
+                            placeholder="Enter Product Barcode"
+                            value={product.barcode ? product.barcode : ''}
+                            errorText={errors.barcode}
+                            setState={setProduct} />
 
                         <div className="mb-6">
                             <label className="mb-2.5 block font-medium text-black dark:text-white">
@@ -129,6 +132,7 @@ function NewProductPage() {
                                     }}
                                 />
                             </div>
+                            {errors.date && <div className="text-red-600">{errors.date}</div>}
                         </div>
 
                         <div className="mb-6">
@@ -143,6 +147,7 @@ function NewProductPage() {
                                     placeholder="Description..."
                                     onChange={handleChange}></textarea>
                             </div>
+                            {errors.description && <div className="text-red-600">{errors.description}</div>}
                         </div>
 
                         <div className="mb-5">
@@ -154,7 +159,7 @@ function NewProductPage() {
                             <CancelButton handleClick={() => navigate('/')} />
                         </div>
 
-                        <div className='text-red-600 text-center'>{error}</div>
+                        <div className='text-red-600 text-center'>{generalError}</div>
                     </form>
                 </div>
             </FormLayout >

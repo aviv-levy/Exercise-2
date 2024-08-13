@@ -3,34 +3,39 @@ import ConnectionLayout from "../Layouts/ConnectionLayout";
 import SVGLayout from "../Layouts/SvgLayout";
 import FormLayout from "../Layouts/FormLayout";
 import { FormEvent, useState } from "react";
-import { useHandleChange } from "../Hooks/useHandleChange.ts";
 import { addNewUser } from "../Services/ApiService.ts";
-import { isRegistrationValid } from "../Services/Validations.ts";
+import { getRegistrationErrorsValidation } from "../Services/Validations.ts";
 import { RegisterationUser } from "../Interfaces/RegisterationUser.ts";
+import CustomizedTextInput from "../Components/CustomizedTextInput.tsx";
 
 function RegisterPage() {
 
     const [user, setUser] = useState<RegisterationUser>({} as RegisterationUser);
-    const [error, setError] = useState<string>('');
-
-    const handleChange = useHandleChange(setUser);
+    const [errors, setErrors] = useState<Record<string, string>>({});
+    const [generalError, setGeneralError] = useState<string>('');
 
     const navigate = useNavigate();
 
     //Handle Register button
     async function handleRegister(e: FormEvent) {
         e.preventDefault();
-        if (!isRegistrationValid(user))
+
+        //Register inputs validation
+        const validationErrors = getRegistrationErrorsValidation(user);
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
             return;
+        }
 
         //api request to create new user
         await addNewUser(user).then(() => {
-            
+
             navigate('/login');
 
         }).catch((err) => {
             if (err) {
-                setError(err);
+                setGeneralError(err);
                 return;
             }
         })
@@ -59,80 +64,52 @@ function RegisterPage() {
                     <form>
 
                         <div className="grid md:grid-cols-2 md:gap-6">
-                            <div className="relative z-0 w-full mb-4 group">
-                                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                    First Name
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="firstname"
-                                        placeholder="Enter your First Name"
-                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
-                            <div className="relative z-0 w-full mb-5 group">
-                                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                    Last Name
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        name="lastname"
-                                        placeholder="Enter your Last Name"
-                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
+
+                            <CustomizedTextInput
+                                type="text"
+                                label="First Name"
+                                name="firstname"
+                                placeholder="Enter your First Name"
+                                value={user.firstname ? user.firstname : ''}
+                                errorText={errors.firstname}
+                                setState={setUser} />
+
+                            <CustomizedTextInput
+                                type="text"
+                                label="Last Name"
+                                name="lastname"
+                                placeholder="Enter your Last Name"
+                                value={user.lastname ? user.lastname : ''}
+                                errorText={errors.lastname}
+                                setState={setUser} />
                         </div>
 
-                        <div className="mb-4">
-                            <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                Username
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type="text"
-                                    name="username"
-                                    placeholder="Enter your username"
-                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <CustomizedTextInput
+                            type="text"
+                            label="Username"
+                            name="username"
+                            placeholder="Enter your username"
+                            value={user.username ? user.username : ''}
+                            errorText={errors.username}
+                            setState={setUser} />
 
-                        <div className="mb-6">
-                            <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                Password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type="password"
-                                    name="password"
-                                    placeholder="8+ Characters, 1 Capital and small letter, 1 special sign"
-                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <CustomizedTextInput
+                            type="password"
+                            label="Password"
+                            name="password"
+                            placeholder="8+ Characters, 1 Capital and small letter, 1 special sign"
+                            value={user.password ? user.password : ''}
+                            errorText={errors.password}
+                            setState={setUser} />
 
-                        <div className="mb-6">
-                            <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                Repeat Password
-                            </label>
-                            <div className="relative">
-                                <input
-                                    type="password"
-                                    name="rePassword"
-                                    placeholder="Repeat Password"
-                                    className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                    onChange={handleChange}
-                                />
-                            </div>
-                        </div>
+                        <CustomizedTextInput
+                            type="password"
+                            label="Repeat Password"
+                            name="rePassword"
+                            placeholder="Repeat Password"
+                            value={user.rePassword ? user.rePassword : ''}
+                            errorText={errors.rePassword}
+                            setState={setUser} />
 
                         <div className="mb-5">
                             <button type="button"
@@ -142,7 +119,7 @@ function RegisterPage() {
                             </button>
                         </div>
 
-                        <div className='text-red-600 text-center'>{error}</div>
+                        <div className='text-red-600 text-center'>{generalError}</div>
                     </form>
                 </FormLayout>
             </ConnectionLayout>

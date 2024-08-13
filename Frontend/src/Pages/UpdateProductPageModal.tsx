@@ -5,6 +5,8 @@ import { dateFormatEU } from "../Services/DateCorrection";
 import { toast } from "react-toastify";
 import { updateProduct } from "../Services/ApiService";
 import CancelButton from "../Components/CancelButton";
+import CustomizedTextInput from "../Components/CustomizedTextInput";
+import { getProductErrors } from "../Services/Validations";
 
 interface Props {
     product: Product,
@@ -14,6 +16,7 @@ interface Props {
 
 function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
 
+    const [errors, setErrors] = useState<Record<string, string>>({});
     const [dateControl, setDateControl] = useState<string>()
 
     const handleChange = useHandleChange(setProduct);
@@ -33,6 +36,14 @@ function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
     async function handleUpdate(e: FormEvent) {
         e.preventDefault();
 
+        //Product inputs validation
+        const validationErrors = getProductErrors(product);
+        setErrors(validationErrors);
+
+        if (Object.keys(validationErrors).length > 0) {
+            return;
+        }
+
         //Api call to update Product, when update successfuly show notification of success 
         await updateProduct(product).then(() => {
 
@@ -47,7 +58,6 @@ function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
 
 
     }
-
 
     if (dateControl === undefined)
         return <div>Loading...</div>
@@ -78,22 +88,18 @@ function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
                         {/* Modal body  */}
                         <form className="p-4 md:p-5">
                             <div className="grid md:grid-cols-2 md:gap-6">
-                                <div className="relative z-0 w-full mb-4 group">
-                                    <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                        Product Name
-                                    </label>
-                                    <div className="relative">
-                                        <input
-                                            type="text"
-                                            name="name"
-                                            value={product.name}
-                                            placeholder="Enter Product Name"
-                                            className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                            onChange={handleChange}
-                                        />
-                                    </div>
-                                </div>
+
+                                <CustomizedTextInput
+                                    type="text"
+                                    label="Product Name"
+                                    name="name"
+                                    placeholder="Enter Product Name"
+                                    value={product.name ? product.name : ''}
+                                    errorText={errors.name}
+                                    setState={setProduct} />
                                 <div className="relative z-0 w-full mb-5 group">
+
+
                                     <label className="mb-2.5 block font-medium text-black dark:text-white">
                                         Select Type
                                     </label>
@@ -108,24 +114,18 @@ function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
                                         <option value='Vegetable'>Vegetable</option>
                                         <option value='Field'>Field</option>
                                     </select>
+                                    {errors.type && <div className="text-red-600">{errors.type}</div>}
                                 </div>
                             </div>
 
-                            <div className="mb-4">
-                                <label className="mb-2.5 block font-medium text-black dark:text-white">
-                                    Barcode
-                                </label>
-                                <div className="relative">
-                                    <input
-                                        type="number"
-                                        name="barcode"
-                                        value={product.barcode}
-                                        placeholder="Enter Product Barcode"
-                                        className="w-full rounded-lg border border-stroke bg-transparent py-4 pl-6 pr-10 text-black outline-none focus:border-primary focus-visible:shadow-none dark:border-form-strokedark dark:bg-form-input dark:text-white dark:focus:border-primary"
-                                        onChange={handleChange}
-                                    />
-                                </div>
-                            </div>
+                            <CustomizedTextInput
+                                type="number"
+                                label="Barcode"
+                                name="barcode"
+                                placeholder="Enter Product Barcode"
+                                value={product.barcode ? product.barcode : ''}
+                                errorText={errors.barcode}
+                                setState={setProduct} />
 
                             <div className="mb-6">
                                 <label className="mb-2.5 block font-medium text-black dark:text-white">
@@ -144,6 +144,7 @@ function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
                                         }}
                                     />
                                 </div>
+                                {errors.date && <div className="text-red-600">{errors.date}</div>}
                             </div>
 
                             <div className="mb-6">
@@ -159,6 +160,7 @@ function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
                                         placeholder="Description..."
                                         onChange={handleChange}></textarea>
                                 </div>
+                                {errors.description && <div className="text-red-600">{errors.description}</div>}
                             </div>
                             <button
                                 type="button"
@@ -171,7 +173,7 @@ function UpdateProductPageModal({ product, setProduct, setIsEdit }: Props) {
                     </div>
                 </div>
             </div>
-            
+
 
         </>
     );

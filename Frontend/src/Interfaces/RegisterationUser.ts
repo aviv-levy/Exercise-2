@@ -5,5 +5,4 @@ export interface RegisterationUser {
     password: string;
     rePassword:string;
     isEditor?: boolean,
-    isAdmin?: boolean;
 }

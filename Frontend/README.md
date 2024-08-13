@@ -1,50 +1,49 @@
-# React + TypeScript + Vite
+# Market
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This project was created for exam for Deeplan
 
-Currently, two official plugins are available:
+## Libraries
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### FrontEnd
 
-## Expanding the ESLint configuration
+Flowbite, tailwindcss, react-toastify, Axios, SweetAlert2,react-router-dom.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+### BackEnd
 
-- Configure the top-level `parserOptions` property like this:
+express, cors, dotenv, bcrypt, joi, jsonwebtoken, mysql2.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+## Development server
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+First import Market database in mysql.
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+User cardential for the database is:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+`User: root`
+`Password: root`
+
+Navigate to Backend directory in terminal by using comand `cd Backend`.
+Run the command `npm install` to install packeges.
+Then Run `node server.js` for a Nodejs server, and the server will be running.
+
+## Development client
+
+Navigate to Frontend directory in terminal by using comand `cd Frontend`.
+Run the command `npm install` to install packeges.
+Then Run `npm run dev` for react development mode. 
+Navigate to localhost from terminal url.
+
+## Login
+
+After running the client you can use 2 users.
+
+one is with editor permission and on is just for reading.
+
+Editor user:
+
+`Username: liron`
+`Password: Aa!123456`
+
+Regular user:
+
+`Username: avivlevy`
+`Password: Aa!1234567`
