@@ -4,6 +4,7 @@ import { Product } from "../Interfaces/Product";
 import { getProducts } from "../Services/ApiService";
 import ProductItem from "../Components/ProductItem";
 import UpdateProductPageModal from "./UpdateProductPageModal";
+import DescriptionModal from "../Components/DescriptionModal";
 
 
 
@@ -13,7 +14,8 @@ function ShopPage() {
     const [filteredProducts, setFilteredProducts] = useState<Array<Product>>([]); // copy of products array for filtering with search
     const [editProduct, setEditProduct] = useState<Product>({} as Product);
     const [search, setSearch] = useState<string>('');
-    const [isEdit, setIsEdit] = useState<boolean>(false);
+    const [isEdit, setIsEdit] = useState<boolean>(false); // show edit page trigger
+    const [isDescription, setDescriptionShow] = useState<boolean>(false); // show decription trigger
     const [loading, setLoading] = useState<boolean>(true);
 
 
@@ -24,7 +26,7 @@ function ShopPage() {
                 const getAllProducts = await getProducts()
                 setProducts(getAllProducts);
                 setFilteredProducts(getAllProducts);
-                
+
             } catch (error) {
                 console.error('Error fetching data:', error);
             } finally {
@@ -59,13 +61,18 @@ function ShopPage() {
                     <UpdateProductPageModal product={editProduct} setProduct={setEditProduct} setIsEdit={setIsEdit} />
                 </div>
             }
+
+            {
+                isDescription &&
+                <DescriptionModal description={editProduct.description} setShow={setDescriptionShow} />
+            }
+            
             <SearchBar
                 placeholder="Search Products..."
                 changeFunc={setSearch}
             />
 
-
-            <div className="relative overflow-x-auto shadow-md sm:rounded-lg mt-5">
+            <div className={`relative overflow-x-auto shadow-md sm:rounded-lg mt-5`}>
                 <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                     <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                         <tr>
@@ -93,7 +100,7 @@ function ShopPage() {
                     <tbody>
                         {
                             filteredProducts?.map((product) =>
-                                <ProductItem key={product.id} product={product} setIsEdit={setIsEdit} setEditProduct={setEditProduct} />
+                                <ProductItem key={product.id} product={product} setIsEdit={setIsEdit} setEditProduct={setEditProduct} setDescriptionShow={setDescriptionShow} />
                             )
                         }
                     </tbody>

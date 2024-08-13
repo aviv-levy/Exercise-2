@@ -8,12 +8,13 @@ import { toast } from "react-toastify";
 interface Props {
     product: Product,
     setIsEdit: Function,
-    setEditProduct: Function
+    setEditProduct: Function,
+    setDescriptionShow: Function
 }
 
 
 
-function ProductItem({ product, setIsEdit, setEditProduct }: Props) {
+function ProductItem({ product, setIsEdit, setEditProduct, setDescriptionShow }: Props) {
     const [isRemoved, setIsRemoved] = useState<boolean>(false);
     const userContext = useContext(UserDetailsContext);
 
@@ -23,6 +24,14 @@ function ProductItem({ product, setIsEdit, setEditProduct }: Props) {
     function handleEdit() {
         setEditProduct(product);
         setIsEdit(true);
+    }
+
+    //Handle edit button
+    //When clicked set product to get details
+    //And set true isDescription to show modal of description item.
+    function handleProductClick() {
+        setEditProduct(product);
+        setDescriptionShow(true);
     }
 
     //Handle remove button
@@ -39,20 +48,20 @@ function ProductItem({ product, setIsEdit, setEditProduct }: Props) {
         <>
             {
                 !isRemoved &&
-                <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                <tr className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th onClick={handleProductClick}  scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {product.id}
                     </th>
-                    <td className="px-6 py-4">
+                    <td onClick={handleProductClick}  className="px-6 py-4">
                         {product.name}
                     </td>
-                    <td className="px-6 py-4">
+                    <td onClick={handleProductClick}  className="px-6 py-4">
                         {product.barcode}
                     </td>
-                    <td className="px-6 py-4">
+                    <td onClick={handleProductClick}  className="px-6 py-4">
                         {product.type}
                     </td>
-                    <td className="px-6 py-4">
+                    <td onClick={handleProductClick}  className="px-6 py-4">
                         {dateFormatCorrection(product.date)}
                     </td>
 
