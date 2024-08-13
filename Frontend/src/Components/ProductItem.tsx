@@ -49,24 +49,24 @@ function ProductItem({ product, setIsEdit, setEditProduct, setDescriptionShow }:
             {
                 !isRemoved &&
                 <tr className="cursor-pointer bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th onClick={handleProductClick}  scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
+                    <th onClick={handleProductClick} scope="row" className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white">
                         {product.id}
                     </th>
-                    <td onClick={handleProductClick}  className="px-6 py-4">
+                    <td onClick={handleProductClick} className="px-6 py-4">
                         {product.name}
                     </td>
-                    <td onClick={handleProductClick}  className="px-6 py-4">
+                    <td onClick={handleProductClick} className="px-6 py-4">
                         {product.barcode}
                     </td>
-                    <td onClick={handleProductClick}  className="px-6 py-4">
+                    <td onClick={handleProductClick} className="px-6 py-4">
                         {product.type}
                     </td>
-                    <td onClick={handleProductClick}  className="px-6 py-4">
+                    <td onClick={handleProductClick} className="px-6 py-4">
                         {dateFormatCorrection(product.date)}
                     </td>
 
                     <td className="flex items-center px-6 py-4">
-                        {userContext?.user.isEditor && // if user is editor show editor buttons
+                        {Boolean(userContext?.user.isEditor) && // if user is editor show editor buttons
                             <>
                                 <button onClick={handleEdit} className="font-medium text-blue-600 dark:text-blue-500 hover:underline">Edit</button>
                                 <button onClick={handleRemove} className="font-medium text-red-600 dark:text-red-500 hover:underline ms-3">Remove</button>
