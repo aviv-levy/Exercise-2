@@ -1,6 +1,5 @@
 import { Routes, Route } from 'react-router-dom';
 import 'flowbite';
-import 'flowbite-react';
 import './app.css';
 import LoginPage from './Pages/LoginPage';
 import RegisterPage from './Pages/RegisterPage';
